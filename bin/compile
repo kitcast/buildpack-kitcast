@@ -1,0 +1,20 @@
+#!/bin/sh
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Installing ffmpeg & libvips"
+BUILD_DIR=$1
+VENDOR_DIR="vendor"
+DOWNLOAD_URL="https://kitcast.s3.amazonaws.com/cdn/ffmpeg-libvips-static.tar.xz"
+echo "DOWNLOAD_URL = " $DOWNLOAD_URL | indent
+
+cd $BUILD_DIR
+mkdir -p $VENDOR_DIR
+cd $VENDOR_DIR
+curl -L --silent $DOWNLOAD_URL | tar -Jx
+echo "exporting PATH" | indent
+PROFILE_PATH="$BUILD_DIR/.profile.d/init.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:vendor/ffmpeg/bin:vendor/libvips/bin:vendor/libvips/lib"' >> $PROFILE_PATH
